@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import * as bcrypt from 'bcrypt';
 
 import { User } from './user.model';
 
@@ -8,7 +9,7 @@ import { User } from './user.model';
 export class UsersService {
   constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
 
-  private loggedInUser: User = null;
+  private loggedInUser: User = null; // current user
 
   getLoggedInUser() {
     return this.loggedInUser ? this.loggedInUser : null;
@@ -19,13 +20,14 @@ export class UsersService {
     let emailTaken = false;
     users.forEach((user: User) => {
       if (user.email === email) {
-        emailTaken = true;
+        emailTaken = true; // found user with the same email address
       }
     });
     if (!emailTaken) {
+      const hash = await bcrypt.hash(password, 10);
       const newUser = new this.userModel({
         email,
-        password,
+        password: hash,
       });
       await newUser.save();
     } else {
@@ -36,27 +38,25 @@ export class UsersService {
   }
 
   async loginUser(email: string, password: string) {
-    let newUser: User;
+    this.loggedInUser = null;
     let wrongPassword = false;
     const users: User[] = await this.userModel.find().exec();
-    users.forEach((user: User) => {
-      if (user.email === email && user.password === password) {
-        newUser = user;
-      } else if (user.email === email && user.password !== password) {
+
+    for (let i = 0; i < users.length; i++) {
+      const match = await bcrypt.compare(password, users[i].password);
+      if (users[i].email === email && match) {
+        // if email and password match then login
+        this.loggedInUser = users[i];
+      } else if (users[i].email === email) {
+        // if only email match then wrong password is entered
         wrongPassword = true;
       }
-    });
-
-    if (!newUser) {
-      if (!wrongPassword) {
-        throw new NotFoundException('Could not find user.');
-      } else {
-        throw new NotFoundException('Incorrect password.');
-      }
-    } else {
-      this.loggedInUser = newUser;
     }
-
+    if (wrongPassword) {
+      throw new NotFoundException('Incorrect password.');
+    } else if (!this.loggedInUser) {
+      throw new NotFoundException('Could not find user.');
+    }
     return { message: 'Successfully logged in.' };
   }
 
