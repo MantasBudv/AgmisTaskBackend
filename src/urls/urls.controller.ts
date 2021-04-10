@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Patch } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 
 import { UrlsService } from './urls.service';
 
@@ -7,22 +7,20 @@ export class UrlsController {
   constructor(private readonly urlsService: UrlsService) {}
 
   @Post()
-  async addUrl(
-    @Body('tiny_url') tiny_url: string,
-    @Body('full_url') full_url: string,
-    @Body('created_by') created_by: string,
-  ) {
-    const generatedId = await this.urlsService.createUrl(
-      tiny_url,
-      full_url,
-      created_by,
-    );
+  async addUrl(@Body('full_url') full_url: string) {
+    const generatedId = await this.urlsService.createUrl(full_url);
     return { id: generatedId };
   }
 
-  @Get()
+  @Get('all')
   async getAllUrls() {
-    const urls = await this.urlsService.getUrlsByUser('test@gmail.com');
+    const urls = await this.urlsService.getUrlsByUser();
+    return urls;
+  }
+
+  @Get(':tinyUrl')
+  async redirectToFullUrl(@Param('tinyUrl') tinyUrl: string) {
+    const urls = await this.urlsService.redirectToFullUrl(tinyUrl);
     return urls;
   }
 }
