@@ -2,11 +2,11 @@ import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 
 import { UrlsService } from './urls.service';
 
-@Controller('urls')
+@Controller('url')
 export class UrlsController {
   constructor(private readonly urlsService: UrlsService) {}
 
-  @Post()
+  @Post('create')
   async addUrl(@Body('full_url') full_url: string) {
     const generatedId = await this.urlsService.createUrl(full_url);
     return { id: generatedId };
@@ -19,8 +19,8 @@ export class UrlsController {
   }
 
   @Get(':tinyUrl')
-  async redirectToFullUrl(@Param('tinyUrl') tinyUrl: string) {
-    const urls = await this.urlsService.redirectToFullUrl(tinyUrl);
-    return urls;
+  redirectToFullUrl(@Param('tinyUrl') tinyUrl: string) {
+    const fullUrl = this.urlsService.redirectToFullUrl(tinyUrl);
+    return fullUrl;
   }
 }

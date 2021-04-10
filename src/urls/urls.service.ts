@@ -31,7 +31,7 @@ export class UrlsService {
   }
 
   async getUrlsByUser(): Promise<Url[]> {
-    let urls: Url[];
+    let urls: Url[] = [];
     try {
       const email = this.usersService.getLoggedInUser().email;
       urls = await this.urlModel.find({ created_by: email }).exec();
@@ -46,7 +46,7 @@ export class UrlsService {
 
   async redirectToFullUrl(tinyUrl: string) {
     const fullUrl = await this.getFullUrl(tinyUrl);
-    Redirect(fullUrl);
+    return fullUrl;
   }
 
   private async getFullUrl(tinyUrl: string): Promise<string> {
