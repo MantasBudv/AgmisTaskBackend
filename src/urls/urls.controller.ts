@@ -15,12 +15,12 @@ export class UrlsController {
   @Get('all')
   async getAllUrls() {
     const urls = await this.urlsService.getUrlsByUser();
-    return urls;
+    return { urls };
   }
 
   @Get(':tinyUrl')
   redirectToFullUrl(@Param('tinyUrl') tinyUrl: string) {
     const fullUrl = this.urlsService.redirectToFullUrl(tinyUrl);
-    return fullUrl;
+    return { fullUrl };
   }
 }

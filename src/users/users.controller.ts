@@ -12,7 +12,7 @@ export class UsersController {
     @Body('password') password: string,
   ) {
     const data = await this.usersService.createUser(email, password);
-    return data.message;
+    return { message: data.message };
   }
 
   @Post('login')
@@ -21,7 +21,7 @@ export class UsersController {
     @Body('password') password: string,
   ) {
     const data = await this.usersService.loginUser(email, password);
-    return data.message;
+    return { message: data.message };
   }
 
   @Get()
@@ -32,6 +32,6 @@ export class UsersController {
   @Patch()
   async updateUser(@Body('password') password: string) {
     const data = await this.usersService.updateUser(password);
-    return data.message;
+    return { message: data.message };
   }
 }
