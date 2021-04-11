@@ -60,6 +60,11 @@ export class UsersService {
     return { message: 'Successfully logged in.' };
   }
 
+  async logoutUser() {
+    this.loggedInUser = null;
+    return { message: 'Successfully logged out.' };
+  }
+
   async updateUser(password: string) {
     const updatedUser = await this.findUser(this.loggedInUser.id);
     if (password) {

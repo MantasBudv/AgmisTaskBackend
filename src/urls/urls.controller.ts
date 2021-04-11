@@ -8,8 +8,8 @@ export class UrlsController {
 
   @Post('create')
   async addUrl(@Body('full_url') full_url: string) {
-    const generatedId = await this.urlsService.createUrl(full_url);
-    return { id: generatedId };
+    const url = await this.urlsService.createUrl(full_url);
+    return url;
   }
 
   @Get('all')
@@ -19,8 +19,8 @@ export class UrlsController {
   }
 
   @Get(':tinyUrl')
-  redirectToFullUrl(@Param('tinyUrl') tinyUrl: string) {
-    const fullUrl = this.urlsService.redirectToFullUrl(tinyUrl);
-    return { fullUrl };
+  async getFullUrl(@Param('tinyUrl') tinyUrl: string) {
+    const data = await this.urlsService.getFullUrl(tinyUrl);
+    return { fullUrl: data.fullUrl };
   }
 }

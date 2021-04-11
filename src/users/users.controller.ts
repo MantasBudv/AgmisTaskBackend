@@ -24,6 +24,12 @@ export class UsersController {
     return { message: data.message };
   }
 
+  @Post('logout')
+  async Logout() {
+    const data = await this.usersService.logoutUser();
+    return { message: data.message };
+  }
+
   @Get()
   getCurrentUser() {
     return this.usersService.getLoggedInUser();

@@ -17,6 +17,7 @@ export class UrlsService {
     let result: Url;
     try {
       const email = this.usersService.getLoggedInUser().email;
+      console.log(email);
       const tinyUrl: string = shortid.generate();
       const newUrl = new this.urlModel({
         tiny_url: tinyUrl,
@@ -27,7 +28,7 @@ export class UrlsService {
     } catch (error) {
       throw new NotFoundException('User is not logged in.');
     }
-    return result.id as string;
+    return result;
   }
 
   async getUrlsByUser(): Promise<Url[]> {
@@ -44,12 +45,12 @@ export class UrlsService {
     return urls;
   }
 
-  async redirectToFullUrl(tinyUrl: string) {
-    const fullUrl = await this.getFullUrl(tinyUrl);
-    return fullUrl;
+  async getFullUrl(tinyUrl: string) {
+    const fullUrl = await this.getUrl(tinyUrl);
+    return { fullUrl };
   }
 
-  private async getFullUrl(tinyUrl: string): Promise<string> {
+  private async getUrl(tinyUrl: string): Promise<string> {
     let urls: Url[];
     try {
       urls = await this.urlModel.find({ tiny_url: tinyUrl }).exec();
