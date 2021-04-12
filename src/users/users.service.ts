@@ -31,10 +31,10 @@ export class UsersService {
       });
       await newUser.save();
     } else {
-      throw new NotFoundException('Email taken.');
+      throw new NotFoundException('Email taken');
     }
 
-    return { message: 'Successfully created user.' };
+    return { message: 'Successfully created user' };
   }
 
   async loginUser(email: string, password: string) {
@@ -53,26 +53,26 @@ export class UsersService {
       }
     }
     if (wrongPassword) {
-      throw new NotFoundException('Incorrect password.');
+      throw new NotFoundException('Incorrect password');
     } else if (!this.loggedInUser) {
-      throw new NotFoundException('Could not find user.');
+      throw new NotFoundException('Could not find user');
     }
-    return { message: 'Successfully logged in.' };
+    return { message: 'Successfully logged in' };
   }
 
   async logoutUser() {
     this.loggedInUser = null;
-    return { message: 'Successfully logged out.' };
+    return { message: 'Successfully logged out' };
   }
 
   async updateUser(password: string) {
     const updatedUser = await this.findUser(this.loggedInUser.id);
     if (password) {
-      updatedUser.password = password;
+      updatedUser.password = await bcrypt.hash(password, 10);
     }
     await updatedUser.save();
     this.loggedInUser = updatedUser;
-    return { message: 'Successfully updated user.' };
+    return { message: 'Successfully updated user' };
   }
 
   private async findUser(id: string): Promise<User> {
@@ -80,10 +80,10 @@ export class UsersService {
     try {
       user = await this.userModel.findById(id);
     } catch (error) {
-      throw new NotFoundException('Could not find user.');
+      throw new NotFoundException('Could not find user');
     }
     if (!user) {
-      throw new NotFoundException('Could not find user.');
+      throw new NotFoundException('Could not find user');
     }
     return user;
   }

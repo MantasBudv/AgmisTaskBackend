@@ -12,6 +12,12 @@ export class UrlsController {
     return url;
   }
 
+  @Post('delete')
+  async deleteUrl(@Body('tiny_url') tiny_url: string) {
+    const data = await this.urlsService.deleteUrl(tiny_url);
+    return { message: data.message };
+  }
+
   @Get('all')
   async getAllUrls() {
     const urls = await this.urlsService.getUrlsByUser();
