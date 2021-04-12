@@ -21,6 +21,14 @@
 </p>
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+  
+## Documentation
+
+Algorithm used to create hashes for short URLs was npm package [shortid](https://www.npmjs.com/package/shortid) function generate(), which generates short user friendly unique id.
+
+Database was created on MongoDB Atlas (cloud database), which needs to be setup in app.module.ts MongooseModule property.
+
+users.service.ts stores information about logged in user, which is why the file was created as a singleton so that urls.service.ts could get information from the same instance.
 
 ## Description
 
